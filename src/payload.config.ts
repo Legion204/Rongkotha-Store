@@ -35,6 +35,11 @@ export default buildConfig({
     ? postgresAdapter({
         pool: {
           connectionString: process.env.DATABASE_URI || '',
+          ssl:
+            process.env.DATABASE_URI?.includes('supabase') ||
+            process.env.DATABASE_URI?.includes('pooler')
+              ? { rejectUnauthorized: false }
+              : undefined,
         },
       })
     : sqliteAdapter({
