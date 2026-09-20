@@ -15,7 +15,14 @@ import { Orders } from './collections/Orders'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-const isPostgres = process.env.DATABASE_URI?.startsWith('postgres')
+const databaseUri =
+  process.env.DATABASE_URI ||
+  process.env.DATABASE_URL ||
+  process.env.POSTGRES_URL ||
+  ''
+
+const isPostgres =
+  databaseUri.startsWith('postgres://') || databaseUri.startsWith('postgresql://')
 
 export default buildConfig({
   admin: {
@@ -34,17 +41,20 @@ export default buildConfig({
   db: isPostgres
     ? postgresAdapter({
         pool: {
-          connectionString: process.env.DATABASE_URI || '',
+          connectionString: databaseUri,
           ssl:
-            process.env.DATABASE_URI?.includes('supabase') ||
-            process.env.DATABASE_URI?.includes('pooler')
+            databaseUri.includes('neon.tech') ||
+            databaseUri.includes('supabase') ||
+            databaseUri.includes('pooler') ||
+            databaseUri.includes('sslmode=require') ||
+            process.env.NODE_ENV === 'production'
               ? { rejectUnauthorized: false }
               : undefined,
         },
       })
     : sqliteAdapter({
         client: {
-          url: process.env.DATABASE_URI || 'file:./payload.db',
+          url: databaseUri || 'file:./payload.db',
         },
       }),
   sharp,
