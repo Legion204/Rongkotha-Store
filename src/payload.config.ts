@@ -1,4 +1,3 @@
-import { sqliteAdapter } from '@payloadcms/db-sqlite'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
@@ -21,9 +20,6 @@ const databaseUri =
   process.env.POSTGRES_URL ||
   ''
 
-const isPostgres =
-  databaseUri.startsWith('postgres://') || databaseUri.startsWith('postgresql://')
-
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -38,24 +34,18 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
-  db: isPostgres
-    ? postgresAdapter({
-        pool: {
-          connectionString: databaseUri,
-          ssl:
-            databaseUri.includes('neon.tech') ||
-            databaseUri.includes('supabase') ||
-            databaseUri.includes('pooler') ||
-            databaseUri.includes('sslmode=require') ||
-            process.env.NODE_ENV === 'production'
-              ? { rejectUnauthorized: false }
-              : undefined,
-        },
-      })
-    : sqliteAdapter({
-        client: {
-          url: databaseUri || 'file:./payload.db',
-        },
-      }),
+  db: postgresAdapter({
+    pool: {
+      connectionString: databaseUri,
+      ssl:
+        databaseUri.includes('neon.tech') ||
+        databaseUri.includes('supabase') ||
+        databaseUri.includes('pooler') ||
+        databaseUri.includes('sslmode=require') ||
+        process.env.NODE_ENV === 'production'
+          ? { rejectUnauthorized: false }
+          : undefined,
+    },
+  }),
   sharp,
 })
