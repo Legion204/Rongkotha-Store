@@ -14,8 +14,6 @@
     "@payloadcms/db-postgres": "^3.90.1",
     "@payloadcms/next": "^3.90.1",
     "@payloadcms/richtext-lexical": "^3.90.1",
-    "@supabase/ssr": "^0.12.7",
-    "@supabase/supabase-js": "^2.116.0",
     "clsx": "^2.1.1",
     "graphql": "^16.10.0",
     "lucide-react": "^1.16.0",

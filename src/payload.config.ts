@@ -39,7 +39,6 @@ export default buildConfig({
       connectionString: databaseUri,
       ssl:
         databaseUri.includes('neon.tech') ||
-        databaseUri.includes('supabase') ||
         databaseUri.includes('pooler') ||
         databaseUri.includes('sslmode=require') ||
         process.env.NODE_ENV === 'production'
